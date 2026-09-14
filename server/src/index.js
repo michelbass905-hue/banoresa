@@ -5,6 +5,7 @@ import auditRouter from "./routes/audit.js";
 import reservationsRouter from "./routes/reservations.js";
 import roomsRouter from "./routes/rooms.js";
 import { releaseExpiredLocks } from "./services/lockService.js";
+import { ensureSchema, seedIfEmpty } from "./db/migrate.js";
 
 const app = express();
 app.use(cors());
@@ -16,6 +17,10 @@ app.use("/api/rooms", roomsRouter);
 app.use("/api/audit-log", auditRouter);
 
 const PORT = process.env.PORT || 4000;
+
+await ensureSchema();
+await seedIfEmpty();
+
 app.listen(PORT, () => console.log(`BanoResa API listening on port ${PORT}`));
 
 setInterval(() => {
