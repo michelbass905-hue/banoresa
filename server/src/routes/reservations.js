@@ -106,20 +106,4 @@ router.post("/:resId/no-show", async (req, res) => {
   res.json({ ok: true });
 });
 
-export default router;  await db.update(reservations).set({ status: "confirmed" }).where(eq(reservations.resId, resId));
-  await db.update(rooms).set({ status: "confirmed" }).where(eq(rooms.roomNumber, r.roomNumber));
-  await db.insert(auditLog).values({ resId, action: "CONFIRM", agentId: "reception1", timestamp: new Date() });
-  res.json({ ok: true });
-});
-
-router.post("/:resId/cancel", async (req, res) => {
-  const { resId } = req.params;
-  const [r] = await db.select().from(reservations).where(eq(reservations.resId, resId));
-  if (!r) return res.status(404).json({ error: "Reservation not found." });
-  await db.update(reservations).set({ status: "cancelled" }).where(eq(reservations.resId, resId));
-  await db.update(rooms).set({ status: "available" }).where(eq(rooms.roomNumber, r.roomNumber));
-  await db.insert(auditLog).values({ resId, action: "CANCEL", agentId: "reception1", timestamp: new Date() });
-  res.json({ ok: true });
-});
-
-export default router;
+export default router; 
