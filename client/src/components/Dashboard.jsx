@@ -104,25 +104,4 @@ export default function Dashboard({ rooms, reservations, onAction }) {
       </section>
     </div>
   );
-        }                <button onClick={() => api.confirm(r.resId).then(onAction)} className="flex-1 bg-teal-700 text-white text-sm rounded-lg py-1.5">Confirm deposit</button>
-                <button onClick={() => api.cancel(r.resId).then(onAction)} className="flex-1 border border-stone-300 text-stone-600 text-sm rounded-lg py-1.5">Cancel</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      <section>
-        <h2 className="text-sm font-semibold text-stone-700 mb-2">Confirmed</h2>
-        {confirmed.length === 0 && <p className="text-sm text-stone-400">No confirmed bookings yet.</p>}
-        <div className="space-y-1">
-          {confirmed.map((r) => (
-            <div key={r.resId} className="flex justify-between text-sm py-2 border-b border-stone-100">
-              <span>Room {roomLabel(r.roomNumber)}</span>
-              <span className="text-emerald-700">Confirmed</span>
-            </div>
-          ))}
-        </div>
-      </section>
-    </div>
-  );
-}
+  } 
