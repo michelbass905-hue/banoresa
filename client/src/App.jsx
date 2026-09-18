@@ -71,35 +71,4 @@ export default function App() {
       </main>
     </div>
   );
-          }        <p className="text-xs uppercase tracking-wide text-stone-400">Bano Palace Hotel</p>
-        <h1 className="text-lg font-semibold text-teal-900">BanoResa</h1>
-      </header>
-
-      <main className="p-4 pb-20">
-        {tab === "dashboard" && <Dashboard rooms={rooms} reservations={reservations} onAction={refresh} />}
-        {tab === "inquiry" && (
-          <InquiryForm
-            onCreated={() => {
-              refresh();
-              setTab("dashboard");
-            }}
-          />
-        )}
-        {tab === "timeline" && <Timeline rooms={rooms} />}
-        {tab === "audit" && <AuditPanel entries={auditLog} />}
-      </main>
-
-      <nav className="fixed bottom-0 inset-x-0 max-w-sm mx-auto bg-white border-t border-stone-200 flex">
-        {TABS.map((t) => (
-          <button
-            key={t.id}
-            onClick={() => setTab(t.id)}
-            className={`flex-1 py-3 text-xs font-medium ${tab === t.id ? "text-teal-700" : "text-stone-400"}`}
-          >
-            {t.label}
-          </button>
-        ))}
-      </nav>
-    </div>
-  );
-}
+} 
