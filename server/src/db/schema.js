@@ -28,6 +28,7 @@ export const reservations = mysqlTable("reservations", {
   status: mysqlEnum("status", ["pending","locked","confirmed","checked_in","checked_out","no_show","cancelled","expired"]).default("pending").notNull(),
   depositAmount: decimal("deposit_amount", { precision: 10, scale: 2 }).default("0.00"),
   lockExpiry: datetime("lock_expiry"),
+  channel: varchar("channel", { length: 20 }).default("call").notNull(),
 });
 
 export const auditLog = mysqlTable("audit_log", {
