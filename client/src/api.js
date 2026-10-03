@@ -1,3 +1,11 @@
+export const CHANNELS = [
+  { id: "whatsapp", label: "WhatsApp" },
+  { id: "call", label: "Phone call" },
+  { id: "email", label: "Email" },
+  { id: "social_media", label: "Social media" },
+];
+export const channelLabel = (id) => CHANNELS.find((c) => c.id === id)?.label ?? id;
+
 const BASE = `${import.meta.env.VITE_API_URL || ""}/api`;
 
 async function handle(res) {
