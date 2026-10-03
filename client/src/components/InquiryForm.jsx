@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { api } from "../api.js";
+import { api, CHANNELS } from "../api.js";
 
 export default function InquiryForm({ onCreated }) {
-  const [form, setForm] = useState({ name: "", phone: "", checkIn: "", checkOut: "", roomType: "STD" });
+  const today = new Date().toISOString().slice(0, 10);
+  const [form, setForm] = useState({ name: "", phone: "", checkIn: "", checkOut: "", roomType: "STD", channel: "whatsapp" });
   const [error, setError] = useState("");
 
   function update(field, value) {
@@ -12,6 +13,10 @@ export default function InquiryForm({ onCreated }) {
   async function submit() {
     if (!form.name || !form.phone || !form.checkIn || !form.checkOut) {
       setError("Fill in every field before continuing.");
+      return;
+    }
+    if (form.checkOut <= form.checkIn) {
+      setError("Check-out must be after check-in.");
       return;
     }
     setError("");
@@ -41,11 +46,24 @@ export default function InquiryForm({ onCreated }) {
           className="w-full mt-1 border border-stone-300 rounded-lg px-3 py-2 text-sm"
         />
       </div>
+      <div>
+        <label className="text-xs text-stone-500">Channel (how the request arrived)</label>
+        <select
+          value={form.channel}
+          onChange={(e) => update("channel", e.target.value)}
+          className="w-full mt-1 border border-stone-300 rounded-lg px-3 py-2 text-sm"
+        >
+          {CHANNELS.map((c) => (
+            <option key={c.id} value={c.id}>{c.label}</option>
+          ))}
+        </select>
+      </div>
       <div className="grid grid-cols-2 gap-2">
         <div>
           <label className="text-xs text-stone-500">Check-in</label>
           <input
             type="date"
+            min={today}
             value={form.checkIn}
             onChange={(e) => update("checkIn", e.target.value)}
             className="w-full mt-1 border border-stone-300 rounded-lg px-2 py-2 text-sm"
@@ -55,6 +73,7 @@ export default function InquiryForm({ onCreated }) {
           <label className="text-xs text-stone-500">Check-out</label>
           <input
             type="date"
+            min={form.checkIn || today}
             value={form.checkOut}
             onChange={(e) => update("checkOut", e.target.value)}
             className="w-full mt-1 border border-stone-300 rounded-lg px-2 py-2 text-sm"

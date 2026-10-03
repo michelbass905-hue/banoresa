@@ -8,7 +8,10 @@ export default function AuditPanel({ entries }) {
             <span className="font-medium">{e.action}</span>
             <span className="text-stone-400 text-xs">{new Date(e.timestamp).toLocaleTimeString()}</span>
           </div>
-          <p className="text-xs text-stone-500">{e.resId}</p>
+          <p className="text-xs text-stone-500">{e.resId} · {e.agentId}</p>
+          {e.newData && (
+            <p className="text-xs text-stone-400">{e.oldData ? `${e.oldData} → ` : ""}{e.newData}</p>
+          )}
         </div>
       ))}
     </div>

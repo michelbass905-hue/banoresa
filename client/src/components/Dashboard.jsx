@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { api } from "../api.js";
+import { api, channelLabel } from "../api.js";
 
 function timeLeft(lockExpiry) {
   const ms = new Date(lockExpiry).getTime() - Date.now();
@@ -22,6 +22,17 @@ export default function Dashboard({ rooms, reservations, onAction }) {
   const confirmed = reservations.filter((r) => r.status === "confirmed");
   const roomLabel = (n) => rooms.find((r) => r.roomNumber === n)?.roomNumber ?? n;
 
+  async function act(fn) {
+    try {
+      setError("");
+      await fn();
+      onAction();
+    } catch (err) {
+      setError(err.message);
+      onAction();
+    }
+  }
+
   function startEdit(r) {
     setEditingId(r.resId);
     setEditDates({ checkIn: r.checkIn.slice(0, 10), checkOut: r.checkOut.slice(0, 10) });
@@ -40,6 +51,7 @@ export default function Dashboard({ rooms, reservations, onAction }) {
 
   return (
     <div className="space-y-6">
+      {error && editingId === null && <p className="text-sm text-rose-600">{error}</p>}
       <section>
         <h2 className="text-sm font-semibold text-stone-700 mb-2">Locked rooms</h2>
         {locked.length === 0 && <p className="text-sm text-stone-400">No rooms locked right now.</p>}
@@ -49,13 +61,14 @@ export default function Dashboard({ rooms, reservations, onAction }) {
               <div className="flex justify-between items-start">
                 <div>
                   <p className="font-medium text-stone-900">Room {roomLabel(r.roomNumber)}</p>
-                  <p className="text-xs text-stone-500">{r.resId}</p>
+                  <p className="text-xs text-stone-500">{r.resId} · {channelLabel(r.channel)}</p>
+                  <p className="text-xs text-stone-400">{r.checkIn.slice(0, 10)} → {r.checkOut.slice(0, 10)}</p>
                 </div>
                 <span className="font-mono text-amber-600 font-semibold">{timeLeft(r.lockExpiry)}</span>
               </div>
               <div className="flex gap-2 mt-3">
-                <button onClick={() => api.confirm(r.resId).then(onAction)} className="flex-1 bg-teal-700 text-white text-sm rounded-lg py-1.5">Confirm deposit</button>
-                <button onClick={() => api.cancel(r.resId).then(onAction)} className="flex-1 border border-stone-300 text-stone-600 text-sm rounded-lg py-1.5">Cancel</button>
+                <button onClick={() => act(() => api.confirm(r.resId))} className="flex-1 bg-teal-700 text-white text-sm rounded-lg py-1.5">Confirm deposit</button>
+                <button onClick={() => act(() => api.cancel(r.resId))} className="flex-1 border border-stone-300 text-stone-600 text-sm rounded-lg py-1.5">Cancel</button>
               </div>
             </div>
           ))}
@@ -71,7 +84,8 @@ export default function Dashboard({ rooms, reservations, onAction }) {
               <div className="flex justify-between items-center">
                 <div>
                   <span className="font-medium text-stone-900">Room {roomLabel(r.roomNumber)}</span>
-                  <p className="text-xs text-stone-500">{r.resId}</p>
+                  <p className="text-xs text-stone-500">{r.resId} · {channelLabel(r.channel)}</p>
+                  <p className="text-xs text-stone-400">{r.checkIn.slice(0, 10)} → {r.checkOut.slice(0, 10)}</p>
                 </div>
                 <span className="text-emerald-700 text-sm">Confirmed</span>
               </div>
@@ -95,7 +109,7 @@ export default function Dashboard({ rooms, reservations, onAction }) {
               ) : (
                 <div className="flex gap-2 mt-3">
                   <button onClick={() => startEdit(r)} className="flex-1 border border-stone-300 text-stone-600 text-sm rounded-lg py-1.5">Modify dates</button>
-                  <button onClick={() => api.cancel(r.resId).then(onAction)} className="flex-1 border border-rose-300 text-rose-600 text-sm rounded-lg py-1.5">Cancel</button>
+                  <button onClick={() => act(() => api.cancel(r.resId))} className="flex-1 border border-rose-300 text-rose-600 text-sm rounded-lg py-1.5">Cancel</button>
                 </div>
               )}
             </div>
