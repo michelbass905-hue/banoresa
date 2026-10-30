@@ -9,6 +9,9 @@ export const pool = mysql.createPool({
   user: process.env.DATABASE_USER || "root",
   password: process.env.DATABASE_PASSWORD || "",
   database: process.env.DATABASE_NAME || "banoresa",
+  // Some hosts (for example Aiven) require a secure connection.
+  // Set DATABASE_SSL=true in the environment variables to turn it on.
+  ssl: process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: false } : undefined,
   waitForConnections: true,
   connectionLimit: 10,
 });
