@@ -13,7 +13,7 @@ export const pool = mysql.createPool({
   // Set DATABASE_SSL=true in the environment variables to turn it on.
   ssl: process.env.DATABASE_SSL === "true" ? { rejectUnauthorized: false } : undefined,
   waitForConnections: true,
-  connectionLimit: 10,
+  connectionLimit: Number(process.env.DATABASE_POOL_LIMIT || 10),
 });
 
 export const db = drizzle(pool, { schema, mode: "default" });
